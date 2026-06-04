@@ -178,7 +178,7 @@
 
   /* center phone (live) and side examples (bare, static) */
   function phoneHTML(ad) {
-    return '<div class="phone is-center" style="width:clamp(232px,27vw,300px);align-self:center">' +
+    return '<div class="phone is-center" style="width:clamp(224px,25vw,278px);align-self:center">' +
       '<div class="screen" style="aspect-ratio:9 / 19">' + storyAd(ad, true) + "</div></div>";
   }
   function bareHTML(ad) {
@@ -228,8 +228,10 @@
 
   function go(d) { idx = (idx + d + n) % n; render(); }
 
-  document.getElementById("navNext").addEventListener("click", function () { go(1); });
-  document.getElementById("navPrev").addEventListener("click", function () { go(-1); });
+  // Arrow moves the carousel in the direction it points:
+  // right arrow (→) slides content right, left arrow (←) slides content left.
+  document.getElementById("navNext").addEventListener("click", function () { go(-1); });
+  document.getElementById("navPrev").addEventListener("click", function () { go(1); });
   dotEls.forEach(function (d) {
     d.addEventListener("click", function () { idx = parseInt(d.getAttribute("data-i"), 10); render(); });
   });
