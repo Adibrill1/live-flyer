@@ -46,6 +46,22 @@
   var foot = document.getElementById("footYear");
   if (foot) foot.textContent = "© " + new Date().getFullYear() + " עדי בריל · כל הזכויות שמורות";
 
+  /* ---------- mobile nav (hamburger) ---------- */
+  var navToggle = document.getElementById("navToggle");
+  var navLinks = document.getElementById("navLinks");
+  if (navToggle && navLinks) {
+    navToggle.addEventListener("click", function () {
+      var open = navLinks.classList.toggle("open");
+      navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    navLinks.querySelectorAll("a").forEach(function (a) {
+      a.addEventListener("click", function () {
+        navLinks.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
+
   /* ---------- FAQ accordion ---------- */
   var faqItems = Array.prototype.slice.call(document.querySelectorAll(".faq-item"));
   faqItems.forEach(function (item) {

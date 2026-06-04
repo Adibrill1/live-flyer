@@ -37,15 +37,18 @@
         </svg>
         מודעות וידאו
       </a>
-      <div class="nav-links row aic" style="gap:26px">
+      <div class="nav-links row aic" id="navLinks">
         <a href="#gallery" style="color:var(--ink);text-decoration:none;font-weight:600;font-size:16px">דוגמאות</a>
         <a href="#pricing" style="color:var(--ink);text-decoration:none;font-weight:600;font-size:16px">מחיר</a>
         <a href="#about" style="color:var(--ink);text-decoration:none;font-weight:600;font-size:16px">אודות</a>
         <a href="#faq" style="color:var(--ink);text-decoration:none;font-weight:600;font-size:16px">שאלות נפוצות</a>
       </div>
-      <a class="btn btn-primary btn-sm" href="https://wa.me/972523919350" data-wa target="_blank" rel="noopener">
+      <a class="btn btn-primary btn-sm nav-cta" href="https://wa.me/972523919350" data-wa target="_blank" rel="noopener">
         <span class="wa-ico" aria-hidden="true"></span> פנייה בוואטסאפ
       </a>
+      <button class="nav-toggle" id="navToggle" aria-label="תפריט" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+      </button>
     </div>
   </nav>
 
