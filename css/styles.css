@@ -39,7 +39,7 @@
   --shadow-lift:    0 22px 60px rgba(44,40,31,.16);
   --ring: 0 0 0 1px var(--line);
 
-  --pad-y: 80px;   /* section vertical rhythm (overridden by density) */
+  --pad-y: 60px;   /* section vertical rhythm (overridden by density) */
   --gap: 24px;
 }
 
@@ -310,7 +310,7 @@ p { margin: 0; }
 .hide-desktop { display: none; }
 
 @media (max-width: 860px) {
-  :root { --pad-y: 64px; }
+  :root { --pad-y: 46px; }
   .sticky-wa { display: flex; }
   .hide-mobile { display: none !important; }
   .hide-desktop { display: block; }

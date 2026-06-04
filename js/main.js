@@ -6,6 +6,12 @@
 (function () {
   "use strict";
 
+  /* ---------- always open at the top on (re)load ---------- */
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  window.addEventListener("load", function () {
+    if (!location.hash) window.scrollTo(0, 0);
+  });
+
   /* ---------- WhatsApp ---------- */
   var WA_NUM = "972523919350";
   var WA_DEFAULT = "היי עדי, ראיתי את דף מודעות הווידאו ואשמח לקבל פרטים :)";
