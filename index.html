@@ -80,24 +80,21 @@
       <div class="wrap center">
         <p class="kicker reveal">גלריית דוגמאות</p>
         <h2 class="h-xl reveal" style="margin-top:10px">ראו את העסקים מתעוררים לחיים</h2>
-        <p class="lead reveal" style="max-width:520px;margin:14px auto 0">עברו עם החצים בין הדוגמאות וראו אותן בתנועה</p>
+        <p class="lead reveal" style="max-width:520px;margin:14px auto 0">לחצו על דוגמה כדי להביא אותה לחזית — או דפדפו עם החצים.</p>
       </div>
 
-      <div class="carousel-stage" id="carousel" style="margin-top:28px">
-        <button class="nav-btn" id="navNext" aria-label="הדוגמה הבאה">
+      <div class="fan-stage" id="fanStage"></div>
+
+      <div class="fan-controls">
+        <button class="nav-btn" id="fanNext" aria-label="הדוגמה הבאה">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l7 7-7 7" /><path d="M22 12H3" opacity=".4" /></svg>
         </button>
-        <div id="slotNext"></div>
-        <div id="slotCenter"></div>
-        <div id="slotPrev"></div>
-        <button class="nav-btn" id="navPrev" aria-label="הדוגמה הקודמת">
+        <span class="chip on" id="galCat" style="font-size:15px;padding:9px 20px;min-width:180px;justify-content:center"></span>
+        <button class="nav-btn" id="fanPrev" aria-label="הדוגמה הקודמת">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l-7 7 7 7" /><path d="M2 12h19" opacity=".4" /></svg>
         </button>
       </div>
 
-      <div class="center" style="margin-top:26px">
-        <span class="chip on" id="galCat" style="font-size:15px;padding:9px 20px"></span>
-      </div>
       <div class="dots" id="galDots" style="margin-top:18px"></div>
     </section>
 

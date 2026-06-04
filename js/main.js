@@ -182,28 +182,54 @@
     return '<div style="' + base + '">' + blobs + body + chrome + "</div>";
   }
 
-  /* center phone (live) and side examples (bare, static) */
-  function phoneHTML(ad) {
-    return '<div class="phone is-center" style="width:clamp(224px,25vw,278px);align-self:center">' +
-      '<div class="screen" style="aspect-ratio:9 / 19">' + storyAd(ad, true) + "</div></div>";
-  }
-  function bareHTML(ad) {
-    return '<div class="gallery-bare" style="width:clamp(120px,17vw,190px);align-self:center">' +
-      '<div class="screen" style="aspect-ratio:9 / 19;border-radius:22px;overflow:hidden;position:relative;background:#000">' +
-      storyAd(ad, false) + "</div></div>";
-  }
-
-  /* ---------- carousel state ---------- */
+  /* ---------- gallery: card fan ---------- */
   var n = ADS.length;
-  var idx = 0;
-  var autoplay = true;
-  var timer = null;
+  var active = 3;           // start on the first designed example
+  var liveNow = -1;
 
-  var slotPrev = document.getElementById("slotPrev");
-  var slotCenter = document.getElementById("slotCenter");
-  var slotNext = document.getElementById("slotNext");
+  var fanStage = document.getElementById("fanStage");
   var galCat = document.getElementById("galCat");
   var galDots = document.getElementById("galDots");
+
+  // fan geometry — tighter on small screens so the spread fits
+  function fanParams() {
+    return window.innerWidth <= 720
+      ? { w: 150, spread: 64, lift: 6, rot: 6 }
+      : { w: 196, spread: 122, lift: 7, rot: 7 };
+  }
+
+  function cardStyle(i, p) {
+    var off = i - active;
+    if (off > n / 2) off -= n;
+    if (off < -n / 2) off += n;
+    var abs = Math.abs(off);
+    var vis = abs <= 3;
+    var x = off * p.spread;
+    var y = abs * p.lift;
+    var rot = off * p.rot;
+    var scale = off === 0 ? 1.04 : 1 - abs * 0.07;
+    return "position:absolute;left:50%;bottom:0;width:" + p.w + "px;transform-origin:50% 100%;" +
+      "transform:translateX(-50%) translateX(" + x + "px) translateY(" + (-y) + "px) rotate(" + rot + "deg) scale(" + scale + ");" +
+      "transition:transform .5s cubic-bezier(.22,.7,.25,1),opacity .4s ease,filter .4s ease;" +
+      "z-index:" + (30 - abs) + ";opacity:" + (vis ? (off === 0 ? 1 : 1 - abs * 0.14) : 0) + ";" +
+      "pointer-events:" + (vis ? "auto" : "none") + ";cursor:" + (off === 0 ? "default" : "pointer") + ";" +
+      "border-radius:22px;overflow:hidden;box-shadow:" + (off === 0 ? "var(--shadow-lift)" : "var(--shadow-soft)") + ";" +
+      "filter:" + (off === 0 ? "none" : "brightness(.92) saturate(.95)") + ";";
+  }
+
+  function adInner(ad, live) {
+    return '<div style="position:relative;aspect-ratio:9 / 19;background:#000">' + storyAd(ad, live) + "</div>";
+  }
+
+  // build cards once
+  var cards = ADS.map(function (ad, i) {
+    var card = document.createElement("div");
+    card.setAttribute("aria-label", ad.cat);
+    card.innerHTML = adInner(ad, false);
+    card.addEventListener("click", function () { if (i !== active) { active = i; render(); } });
+    fanStage.appendChild(card);
+    return card;
+  });
 
   // build dots once
   var dotsHTML = "";
@@ -212,37 +238,38 @@
   }
   galDots.innerHTML = dotsHTML;
   var dotEls = Array.prototype.slice.call(galDots.querySelectorAll(".dot"));
-
-  function schedule() {
-    if (timer) clearTimeout(timer);
-    if (!autoplay) return;
-    var delay = ADS[idx].video ? 9000 : 5400;
-    timer = setTimeout(function () { idx = (idx + 1) % n; render(); }, delay);
-  }
-
-  function render() {
-    var prev = (idx - 1 + n) % n;
-    var next = (idx + 1) % n;
-    // DOM order matches the prototype: [next-arrow] bare(next) phone(idx) bare(prev) [prev-arrow]
-    slotNext.innerHTML = bareHTML(ADS[next]);
-    slotCenter.innerHTML = phoneHTML(ADS[idx]);
-    slotPrev.innerHTML = bareHTML(ADS[prev]);
-    galCat.textContent = ADS[idx].cat;
-    dotEls.forEach(function (d, i) { d.classList.toggle("on", i === idx); });
-    schedule();
-  }
-
-  function go(d) { idx = (idx + d + n) % n; render(); }
-
-  // Arrow moves the carousel in the direction it points:
-  // right arrow (→) slides content right, left arrow (←) slides content left.
-  document.getElementById("navNext").addEventListener("click", function () { go(-1); });
-  document.getElementById("navPrev").addEventListener("click", function () { go(1); });
   dotEls.forEach(function (d) {
-    d.addEventListener("click", function () { idx = parseInt(d.getAttribute("data-i"), 10); render(); });
+    d.addEventListener("click", function () { active = parseInt(d.getAttribute("data-i"), 10); render(); });
   });
 
+  function render() {
+    var p = fanParams();
+    cards.forEach(function (card, i) { card.style.cssText = cardStyle(i, p); });
+    if (liveNow !== active) {
+      if (liveNow >= 0) cards[liveNow].innerHTML = adInner(ADS[liveNow], false);
+      cards[active].innerHTML = adInner(ADS[active], true);
+      liveNow = active;
+    }
+    galCat.textContent = ADS[active].cat;
+    dotEls.forEach(function (d, i) { d.classList.toggle("on", i === active); });
+  }
+
+  function go(d) { active = (active + d + n) % n; render(); }
+
+  // arrow moves the fan in the direction it points (→ slides the fan right)
+  document.getElementById("fanNext").addEventListener("click", function () { go(-1); });
+  document.getElementById("fanPrev").addEventListener("click", function () { go(1); });
+
   render();
+
+  var fanResizeT;
+  window.addEventListener("resize", function () {
+    clearTimeout(fanResizeT);
+    fanResizeT = setTimeout(function () {
+      var p = fanParams();
+      cards.forEach(function (card, i) { card.style.cssText = cardStyle(i, p); });
+    }, 120);
+  });
 
   /* ---------- reveal on scroll ---------- */
   (function () {
