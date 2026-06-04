@@ -215,6 +215,9 @@ p { margin: 0; }
 }
 .nav-toggle svg { width: 24px; height: 24px; }
 
+/* ---------- footer ---------- */
+.site-footer { background: var(--ink); color: #e9e3d2; padding-block: 48px; }
+
 /* ---------- sticky mobile CTA ---------- */
 .sticky-wa {
   position: fixed; inset-inline: 14px; bottom: 14px; z-index: 60;
@@ -317,8 +320,11 @@ p { margin: 0; }
   }
   .carousel-stage .nav-btn:hover,
   .carousel-stage .nav-btn:active { transform: translateY(-50%) scale(1.06); }
-  #navNext { inset-inline-end: 6px; }
-  #navPrev { inset-inline-start: 6px; }
+  #navNext { inset-inline-start: 6px; }
+  #navPrev { inset-inline-end: 6px; }
+
+  /* keep footer end clear of the fixed WhatsApp bar */
+  .site-footer { padding-bottom: 104px; }
 }
 
 @keyframes adfill { from { width: 0%; } to { width: 100%; } }
