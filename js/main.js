@@ -224,6 +224,7 @@
   // build cards once
   var cards = ADS.map(function (ad, i) {
     var card = document.createElement("div");
+    card.className = "fan-card";
     card.setAttribute("aria-label", ad.cat);
     card.innerHTML = adInner(ad, false);
     card.addEventListener("click", function () { if (i !== active) { active = i; render(); } });
@@ -244,7 +245,10 @@
 
   function render() {
     var p = fanParams();
-    cards.forEach(function (card, i) { card.style.cssText = cardStyle(i, p); });
+    cards.forEach(function (card, i) {
+      card.style.cssText = cardStyle(i, p);
+      card.classList.toggle("is-front", i === active);
+    });
     if (liveNow !== active) {
       if (liveNow >= 0) cards[liveNow].innerHTML = adInner(ADS[liveNow], false);
       cards[active].innerHTML = adInner(ADS[active], true);
