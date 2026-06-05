@@ -61,11 +61,20 @@
       navToggle.setAttribute("aria-expanded", open ? "true" : "false");
     });
     navLinks.querySelectorAll("a").forEach(function (a) {
-      a.addEventListener("click", function () {
-        navLinks.classList.remove("open");
-        navToggle.setAttribute("aria-expanded", "false");
-      });
+      a.addEventListener("click", closeMenu);
     });
+    // close on outside tap or Escape
+    document.addEventListener("click", function (e) {
+      if (navLinks.classList.contains("open") && !navLinks.contains(e.target) && !navToggle.contains(e.target)) closeMenu();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeMenu();
+    });
+  }
+  function closeMenu() {
+    if (!navLinks) return;
+    navLinks.classList.remove("open");
+    navToggle.setAttribute("aria-expanded", "false");
   }
 
   /* ---------- FAQ accordion ---------- */
