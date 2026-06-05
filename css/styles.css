@@ -146,7 +146,7 @@ p { margin: 0; }
 
 /* ---------- gallery card fan ---------- */
 .fan-stage {
-  position: relative; height: 500px; max-width: 940px; margin: 40px auto 0;
+  position: relative; height: 560px; max-width: 1040px; margin: 40px auto 0;
 }
 .fan-controls {
   display: flex; align-items: center; justify-content: center;
@@ -155,8 +155,8 @@ p { margin: 0; }
 /* fixed phone frame in the centre of the fan; examples animate into it */
 .fan-frame {
   position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
-  width: 212px; padding: 6px; background: #1f1e19; border-radius: 26px;
-  box-shadow: var(--shadow-lift); z-index: 40; pointer-events: none;
+  width: 258px; padding: 7px; background: #1f1e19; border-radius: 30px;
+  box-shadow: var(--shadow-lift); z-index: 40; cursor: zoom-in;
 }
 .fan-frame::before { /* notch */
   content: ""; position: absolute; top: 11px; left: 50%; transform: translateX(-50%);
@@ -167,6 +167,34 @@ p { margin: 0; }
 }
 .frame-in { position: absolute; inset: 0; animation: frameIn .45s cubic-bezier(.22,.7,.25,1); }
 @keyframes frameIn { from { opacity: 0; transform: translateY(10px) scale(1.03); } to { opacity: 1; transform: none; } }
+
+/* lightbox — click the centre example to enlarge it full-screen */
+.lightbox {
+  position: fixed; inset: 0; z-index: 200; display: none;
+  align-items: center; justify-content: center; padding: 24px;
+  background: rgba(20, 18, 12, .82); backdrop-filter: blur(6px);
+}
+.lightbox.open { display: flex; animation: lbFade .25s ease; }
+@keyframes lbFade { from { opacity: 0; } to { opacity: 1; } }
+.lightbox-phone {
+  position: relative; padding: 8px; background: #1f1e19; border-radius: 36px;
+  box-shadow: var(--shadow-lift); animation: frameIn .4s cubic-bezier(.22,.7,.25,1);
+}
+.lightbox-phone::before {
+  content: ""; position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+  width: 26%; height: 6px; background: #000; border-radius: 4px; z-index: 6; opacity: .85;
+}
+.lightbox-phone .screen {
+  position: relative; height: min(80vh, calc(76vw * 19 / 9), 720px); aspect-ratio: 9 / 19;
+  border-radius: 28px; overflow: hidden; background: #000;
+}
+.lightbox-close {
+  position: absolute; top: 18px; inset-inline-start: 18px;
+  width: 46px; height: 46px; border-radius: 50%; border: none; cursor: pointer;
+  background: rgba(255, 255, 255, .15); color: #fff; font-size: 26px; line-height: 1;
+  display: flex; align-items: center; justify-content: center; transition: background .2s;
+}
+.lightbox-close:hover { background: rgba(255, 255, 255, .28); }
 
 /* ---------- FAQ ---------- */
 .faq-item { border: 1px solid var(--line); border-radius: var(--r-md); background: var(--cream); overflow: hidden; transition: box-shadow .2s; }
@@ -313,8 +341,8 @@ p { margin: 0; }
   .nav .nav-links a:active { background: var(--olive-tint); }
 
   /* mobile fan: shorter stage + smaller frame */
-  .fan-stage { height: 360px; margin-top: 28px; }
-  .fan-frame { width: 164px; }
+  .fan-stage { height: 404px; margin-top: 28px; }
+  .fan-frame { width: 190px; }
 
   /* keep footer end clear of the fixed WhatsApp bar */
   .site-footer { padding-bottom: 104px; }

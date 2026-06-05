@@ -202,8 +202,8 @@
   // fan geometry — tighter on small screens so the spread fits
   function fanParams() {
     return window.innerWidth <= 720
-      ? { w: 150, spread: 64, lift: 6, rot: 6 }
-      : { w: 196, spread: 122, lift: 7, rot: 7 };
+      ? { w: 172, spread: 74, lift: 7, rot: 6 }
+      : { w: 234, spread: 138, lift: 8, rot: 7 };
   }
 
   function cardStyle(i, p) {
@@ -283,6 +283,26 @@
       cards.forEach(function (card, i) { card.style.cssText = cardStyle(i, p); });
     }, 120);
   });
+
+  /* ---------- gallery lightbox (click centre to enlarge) ---------- */
+  var lightbox = document.getElementById("lightbox");
+  var lightboxScreen = document.getElementById("lightboxScreen");
+  function openZoom() {
+    lightboxScreen.innerHTML = storyAd(ADS[active], true);
+    lightbox.hidden = false;
+    lightbox.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+  function closeZoom() {
+    if (!lightbox.classList.contains("open")) return;
+    lightbox.classList.remove("open");
+    lightbox.hidden = true;
+    document.body.style.overflow = "";
+  }
+  fanFrame.addEventListener("click", openZoom);
+  document.getElementById("lightboxClose").addEventListener("click", closeZoom);
+  lightbox.addEventListener("click", function (e) { if (e.target === lightbox) closeZoom(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeZoom(); });
 
   /* ---------- reveal on scroll ---------- */
   (function () {
