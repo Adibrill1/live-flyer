@@ -182,10 +182,9 @@
     return '<div style="' + base + '">' + blobs + body + chrome + "</div>";
   }
 
-  /* ---------- gallery: card fan ---------- */
+  /* ---------- gallery: fixed phone frame + fanned cards behind ---------- */
   var n = ADS.length;
   var active = 3;           // start on the first designed example
-  var liveNow = -1;
 
   var fanStage = document.getElementById("fanStage");
   var galCat = document.getElementById("galCat");
@@ -203,34 +202,41 @@
     if (off > n / 2) off -= n;
     if (off < -n / 2) off += n;
     var abs = Math.abs(off);
-    var vis = abs <= 3;
+    var vis = abs >= 1 && abs <= 3;   // active (off 0) is represented by the fixed frame
     var x = off * p.spread;
     var y = abs * p.lift;
     var rot = off * p.rot;
-    var scale = off === 0 ? 1.04 : 1 - abs * 0.07;
+    var scale = 1 - abs * 0.07;
     return "position:absolute;left:50%;bottom:0;width:" + p.w + "px;transform-origin:50% 100%;" +
       "transform:translateX(-50%) translateX(" + x + "px) translateY(" + (-y) + "px) rotate(" + rot + "deg) scale(" + scale + ");" +
       "transition:transform .5s cubic-bezier(.22,.7,.25,1),opacity .4s ease,filter .4s ease;" +
-      "z-index:" + (30 - abs) + ";opacity:" + (vis ? (off === 0 ? 1 : 1 - abs * 0.14) : 0) + ";" +
-      "pointer-events:" + (vis ? "auto" : "none") + ";cursor:" + (off === 0 ? "default" : "pointer") + ";" +
-      "border-radius:22px;overflow:hidden;box-shadow:" + (off === 0 ? "var(--shadow-lift)" : "var(--shadow-soft)") + ";" +
-      "filter:" + (off === 0 ? "none" : "brightness(.92) saturate(.95)") + ";";
+      "z-index:" + (20 - abs) + ";opacity:" + (vis ? 1 - abs * 0.14 : 0) + ";" +
+      "pointer-events:" + (vis ? "auto" : "none") + ";cursor:pointer;" +
+      "border-radius:22px;overflow:hidden;box-shadow:var(--shadow-soft);" +
+      "filter:brightness(.92) saturate(.95);";
   }
 
-  function adInner(ad, live) {
-    return '<div style="position:relative;aspect-ratio:9 / 19;background:#000">' + storyAd(ad, live) + "</div>";
+  function adInner(ad) {
+    return '<div style="position:relative;aspect-ratio:9 / 19;background:#000">' + storyAd(ad, false) + "</div>";
   }
 
-  // build cards once
+  // build the fanned cards once
   var cards = ADS.map(function (ad, i) {
     var card = document.createElement("div");
     card.className = "fan-card";
     card.setAttribute("aria-label", ad.cat);
-    card.innerHTML = adInner(ad, false);
+    card.innerHTML = adInner(ad);
     card.addEventListener("click", function () { if (i !== active) { active = i; render(); } });
     fanStage.appendChild(card);
     return card;
   });
+
+  // the fixed phone frame in the centre — the active example animates into it
+  var fanFrame = document.createElement("div");
+  fanFrame.className = "fan-frame";
+  fanFrame.innerHTML = '<div class="screen"></div>';
+  fanStage.appendChild(fanFrame);
+  var frameScreen = fanFrame.querySelector(".screen");
 
   // build dots once
   var dotsHTML = "";
@@ -245,15 +251,9 @@
 
   function render() {
     var p = fanParams();
-    cards.forEach(function (card, i) {
-      card.style.cssText = cardStyle(i, p);
-      card.classList.toggle("is-front", i === active);
-    });
-    if (liveNow !== active) {
-      if (liveNow >= 0) cards[liveNow].innerHTML = adInner(ADS[liveNow], false);
-      cards[active].innerHTML = adInner(ADS[active], true);
-      liveNow = active;
-    }
+    cards.forEach(function (card, i) { card.style.cssText = cardStyle(i, p); });
+    // swap the example inside the fixed frame, replaying the "enter" animation
+    frameScreen.innerHTML = '<div class="frame-in">' + storyAd(ADS[active], true) + "</div>";
     galCat.textContent = ADS[active].cat;
     dotEls.forEach(function (d, i) { d.classList.toggle("on", i === active); });
   }
